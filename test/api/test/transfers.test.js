@@ -20,7 +20,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(201);
+      expect(response.status).to.equal(201);
     });
 
     it("Deve retornar sucesso com 201 quando o valor da transferência for <= R$ 5.000,00 e usuário não está na lista de favorecidos", async () => {
@@ -33,7 +33,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(201);
+      expect(response.status).to.equal(201);
     });
 
     it("Deve retornar sucesso com 201 quando o valor da transferência for > R$ 5.000,00 e usuário está na lista de favorecidos", async () => {
@@ -46,7 +46,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(201);
+      expect(response.status).to.equal(201);
     });
 
     it("Deve retornar um corpo de resposta válido quando a transferência tiver sucesso com código 201", async () => {
@@ -58,13 +58,15 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      console.log(response.body);
-
-      expect(response.status).equal(201);
+      expect(response.status).to.equal(201);
       expect(response.body).to.have.property("from");
       expect(response.body).to.have.property("to");
       expect(response.body).to.have.property("value");
       expect(response.body).to.have.property("date");
+      expect(response.body.from).to.be.a("string");
+      expect(response.body.to).to.be.a("string");
+      expect(response.body.value).to.be.a("number");
+      expect(response.body.date).to.be.a("string");
     });
 
     it("Deve retornar 400 quando o valor da transferência for maior que R$ 5.000,00 e usuário não está na lista de favorecidos", async () => {
@@ -78,7 +80,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(400);
+      expect(response.status).to.equal(400);
     });
 
     it("Deve retornar 400 quando o valor da transferência for maior que o saldo da conta", async () => {
@@ -91,7 +93,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(400);
+      expect(response.status).to.equal(400);
     });
 
     it("Deve retornar 400 quando o valor da transferência for igual a zero", async () => {
@@ -104,7 +106,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(400);
+      expect(response.status).to.equal(400);
     });
 
     it("Deve retornar 400 quando o valor da transferência for negativo", async () => {
@@ -117,7 +119,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(400);
+      expect(response.status).to.equal(400);
     });
 
     it("Deve retornar 400 quando a transferência for feita entre o mesmo usuário", async () => {
@@ -130,7 +132,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(400);
+      expect(response.status).to.equal(400);
     });
 
     it("Deve retornar 400 quando a transferência for feita para usuário inexistente", async () => {
@@ -156,7 +158,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(400);
+      expect(response.status).to.equal(400);
     });
 
     it("Deve retornar 400 quando o campo 'from' for vazio ", async () => {
@@ -169,7 +171,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(400);
+      expect(response.status).to.equal(400);
     });
 
     it("Deve retornar 400 quando o campo 'value' for vazio", async () => {
@@ -182,7 +184,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(400);
+      expect(response.status).to.equal(400);
     });
 
     it("Deve retornar 400 quando o campo 'to' for um number", async () => {
@@ -208,7 +210,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(400);
+      expect(response.status).to.equal(400);
     });
 
     it("Deve retornar 400 quando o campo 'value' for uma string", async () => {
@@ -221,7 +223,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${token}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(400);
+      expect(response.status).to.equal(400);
     });
 
     it("Deve retornar 401 quando token não for fornecido", async () => {
@@ -234,7 +236,7 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${tokenVazio}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(401);
+      expect(response.status).to.equal(401);
     });
 
     it("Deve retornar 401 quando token inválido for fornecido", async () => {
@@ -247,18 +249,65 @@ describe("Transferências", () => {
         .set("Authorization", `Bearer ${tokenInválido}`)
         .send(bodyTransferencias);
 
-      expect(response.status).equal(401);
+      expect(response.status).to.equal(401);
     });
   });
 
   describe("GET /transfers", () => {
-    it("Deve retornar sucesso com 200", async () => {
+    it("Deve retornar sucesso com 200 e array no corpo da requisição com dados válidos", async () => {
       const response = await request(process.env.BASE_URL)
-      .get("/transfers")
-      .set('Authorization', `Bearer ${token}`)
-      
-      expect(response.status).to.equal(200)
+        .get("/transfers")
+        .set("Authorization", `Bearer ${token}`);
+
+      expect(response.status).to.equal(200);
+      expect(response.body).to.be.an("array");
+    });
+
+    it("Deve retornar sucesso com 200 e array no corpo da requisição com campos obrigatórios com tipos válidos", async () => {
+      const response = await request(process.env.BASE_URL)
+        .get("/transfers")
+        .set("Authorization", `Bearer ${token}`);
+
+      response.body.forEach((item) => {
+        expect(item).to.have.property("from");
+        expect(item).to.have.property("to");
+        expect(item).to.have.property("value");
+        expect(item).to.have.property("date");
+        expect(item.from).to.be.a("string");
+        expect(item.to).to.be.a("string");
+        expect(item.value).to.be.a("number");
+        expect(item.date).to.be.a("string");
+      });
+    });
+
+    it("Deve retornar o usuário autenticado no campo 'from'", async () => {
+      const response = await request(process.env.BASE_URL)
+        .get("/transfers")
+        .set("Authorization", `Bearer ${token}`);
+
+      response.body.forEach((item) => {
+        expect(item.from).to.equal("julio");
+      });
+    });
+
+    it("Deve retornar 401 quando token não for fornecido", async () => {
+      const tokenVazio = "";
+
+      const response = await request(process.env.BASE_URL)
+        .get("/transfers")
+        .set("Authorization", `Bearer ${tokenVazio}`);
+
+      expect(response.status).to.equal(401);
+    });
+
+    it("Deve retornar 401 quando token inválido for fornecido", async () => {
+      const tokenInválido = "token_invalido";
+
+      const response = await request(process.env.BASE_URL)
+        .get("/transfers")
+        .set("Authorization", `Bearer ${tokenInválido}`);
+
+      expect(response.status).to.equal(401);
     });
   });
-
 });
