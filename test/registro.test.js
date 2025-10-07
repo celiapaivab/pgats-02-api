@@ -1,0 +1,38 @@
+const request = require('supertest');
+const { expect } = require('chai')
+const postUser = require('../fixtures/postUser.json')
+
+describe('Registro', () => {
+    describe('POST', () => {
+        it('Deve registrar um novo usuario', async () => {
+            // Gera username único para cada teste
+            const postUser = {
+                "username": `julio_${Date.now()}`,
+                "password": "123456"
+            };
+            const resposta = await request("http://localhost:3000")
+                .post('/users/register')
+                .set('Content-Type', 'application/json')
+                .send(postUser)
+
+
+            expect(resposta.status).to.equal(201);
+            expect(resposta.body).to.be.a('object');
+            expect(resposta.body).to.have.property('username', postUser.username);
+        })
+
+        it('Validar erro de usuario já registrado', async () => {
+            const postUser = {
+                "username": "julio.lima",
+                "password": "123456"
+            };
+            const resposta = await request("http://localhost:3000")
+                .post('/users/register')
+                .set('Content-Type', 'application/json')
+                .send(postUser)
+
+
+            expect(resposta.status).to.equal(400);
+        })
+    })
+})
