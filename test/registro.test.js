@@ -2,9 +2,10 @@ const request = require('supertest');
 const { expect } = require('chai')
 const postUser = require('../fixtures/postUser.json')
 
+
 describe('Registro', () => {
     describe('POST', () => {
-        it('Deve registrar um novo usuario', async () => {
+        it('Must register a new user', async () => {
             // Gera username único para cada teste
             const postUser = {
                 "username": `julio_${Date.now()}`,
@@ -21,7 +22,7 @@ describe('Registro', () => {
             expect(resposta.body).to.have.property('username', postUser.username);
         })
 
-        it('Validar erro de usuario já registrado', async () => {
+        it('Validate already registered user error', async () => {
             const postUser = {
                 "username": "julio.lima",
                 "password": "123456"
