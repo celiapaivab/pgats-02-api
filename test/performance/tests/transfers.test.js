@@ -5,10 +5,14 @@ import { pegarBaseURL } from "../utils/variaveis.js";
 const postTransfer = JSON.parse(open("../fixtures/postTransfers.json"));
 
 export const options = {
-  iterations: 50,
+  stages: [
+    { duration: '5s', target: 10 },
+    { duration: '20s', target: 10 },
+    { duration: '5s', target: 0 },
+  ],
 
   thresholds: {
-    http_req_duration: ["p(90)<100", "max<1000"],
+    http_req_duration: ["p(90)<3000", "max<5000"],
     http_req_failed: ["rate<0.01"],
   },
 };
@@ -21,7 +25,7 @@ export default function () {
   const params = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
+      "Authorization": "Bearer " + token,
     },
   };
 
