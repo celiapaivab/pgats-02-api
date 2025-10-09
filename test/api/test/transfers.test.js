@@ -36,7 +36,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(201);
     });
 
-    it("Deve retornar sucesso com 201 quando o valor da transferência for > R$ 5.000,00 e usuário está na lista de favorecidos", async () => {
+    it("Deve retornar sucesso com 201 quando o valor da transferência for > R$ 5.000,00 e usuário está na lista de favorecidos", async () => {    
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.value = 5001;
 
