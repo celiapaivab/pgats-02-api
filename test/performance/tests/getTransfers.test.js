@@ -5,9 +5,9 @@ import { pegarBaseURL } from "../utils/variaveis.js";
 
 export const options = {
   stages: [
-    { duration: '5s', target: 10 },
-    { duration: '20s', target: 10 },
-    { duration: '5s', target: 0 },
+    { duration: "5s", target: 10 },
+    { duration: "20s", target: 10 },
+    { duration: "5s", target: 0 },
   ],
 
   thresholds: {
@@ -22,14 +22,14 @@ export default function () {
 
   const params = {
     headers: {
-      "Authorization": "Bearer " + token,
+      Authorization: "Bearer " + token,
     },
   };
 
   const res = http.get(url, params);
 
   check(res, {
-    "Validar que o status é 200": (r) => r.status === 200,
+    "Validate that the status is 200": (r) => r.status === 200,
   });
 
   sleep(1);

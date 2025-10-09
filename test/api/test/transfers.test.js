@@ -4,14 +4,14 @@ const { obterToken } = require("../helper/autenticacao.js");
 const postTransferencias = require("../fixtures/postTransfers.json");
 require("dotenv").config();
 
-describe("Transferências", () => {
+describe("Transfers", () => {
   let token;
   beforeEach(async () => {
     token = await obterToken("julio", 123456);
   });
 
   describe("POST /transfers", () => {
-    it("Deve retornar sucesso com 201 quando o valor da transferência for <= R$ 5.000,00 e usuário está na lista de favorecidos", async () => {
+    it("Should return 201 success when the transfer amount is <= R$ 5,000.00 and the recipient is in the list of allowed users", async () => {
       const bodyTransferencias = { ...postTransferencias };
 
       const response = await request(process.env.BASE_URL)
@@ -23,7 +23,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(201);
     });
 
-    it("Deve retornar sucesso com 201 quando o valor da transferência for <= R$ 5.000,00 e usuário não está na lista de favorecidos", async () => {
+    it("Should return 201 success when the transfer amount is <= R$ 5,000.00 and the recipient is not in the list of allowed users", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.to = "maria";
 
@@ -36,7 +36,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(201);
     });
 
-    it("Deve retornar sucesso com 201 quando o valor da transferência for > R$ 5.000,00 e usuário está na lista de favorecidos", async () => {    
+    it("Should return 201 success when the transfer amount is > R$ 5,000.00 and the recipient is in the list of allowed users", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.value = 5001;
 
@@ -49,7 +49,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(201);
     });
 
-    it("Deve retornar um corpo de resposta válido quando a transferência tiver sucesso com código 201", async () => {
+    it("Should return a valid response body when the transfer succeeds with a 201 status code", async () => {
       const bodyTransferencias = { ...postTransferencias };
 
       const response = await request(process.env.BASE_URL)
@@ -69,7 +69,7 @@ describe("Transferências", () => {
       expect(response.body.date).to.be.a("string");
     });
 
-    it("Deve retornar 400 quando o valor da transferência for maior que R$ 5.000,00 e usuário não está na lista de favorecidos", async () => {
+    it("Should return 400 when the transfer amount is > R$ 5,000.00 and the user is not on the list of allowed recipients", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.to = "maria";
       bodyTransferencias.value = 5001;
@@ -83,7 +83,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(400);
     });
 
-    it("Deve retornar 400 quando o valor da transferência for maior que o saldo da conta", async () => {
+    it("Should return 400 when the transfer amount exceeds the account balance", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.value = 11000;
 
@@ -96,7 +96,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(400);
     });
 
-    it("Deve retornar 400 quando o valor da transferência for igual a zero", async () => {
+    it("Should return 400 when the transfer amount is zero", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.value = 0;
 
@@ -109,7 +109,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(400);
     });
 
-    it("Deve retornar 400 quando o valor da transferência for negativo", async () => {
+    it("Should return 400 when the transfer amount is negative", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.value = -100;
 
@@ -122,7 +122,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(400);
     });
 
-    it("Deve retornar 400 quando a transferência for feita entre o mesmo usuário", async () => {
+    it("Should return 400 when the transfer is made to the same user", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.to = "julio";
 
@@ -135,7 +135,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(400);
     });
 
-    it("Deve retornar 400 quando a transferência for feita para usuário inexistente", async () => {
+    it("Should return 400 when the transfer is made to a nonexistent user", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.to = "usuarioInexistente";
 
@@ -148,7 +148,7 @@ describe("Transferências", () => {
       expect(response.status).equal(400);
     });
 
-    it("Deve retornar 400 quando o campo 'to' for vazio ", async () => {
+    it("Should return 400 when the 'to' field is empty ", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.to = "";
 
@@ -161,7 +161,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(400);
     });
 
-    it("Deve retornar 400 quando o campo 'from' for vazio ", async () => {
+    it("Should return 400 when the 'from' field is empty", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.from = "";
 
@@ -174,7 +174,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(400);
     });
 
-    it("Deve retornar 400 quando o campo 'value' for vazio", async () => {
+    it("Should return 400 when the 'value' field is empty", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.value = "";
 
@@ -187,7 +187,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(400);
     });
 
-    it("Deve retornar 400 quando o campo 'to' for um number", async () => {
+    it("Should return 400 when the 'to' field is a number", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.to = 1234;
 
@@ -200,7 +200,7 @@ describe("Transferências", () => {
       expect(response.status).equal(400);
     });
 
-    it("Deve retornar 400 quando o campo 'from' for um number", async () => {
+    it("Should return 400 when the 'to' from is a number", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.from = 1234;
 
@@ -213,7 +213,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(400);
     });
 
-    it("Deve retornar 400 quando o campo 'value' for uma string", async () => {
+    it("Should return 400 when the 'value' field is a string", async () => {
       const bodyTransferencias = { ...postTransferencias };
       bodyTransferencias.value = "1000";
 
@@ -226,7 +226,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(400);
     });
 
-    it("Deve retornar 401 quando token não for fornecido", async () => {
+    it("Should return 401 when no token is provided", async () => {
       const bodyTransferencias = { ...postTransferencias };
       const tokenVazio = "";
 
@@ -239,7 +239,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(401);
     });
 
-    it("Deve retornar 401 quando token inválido for fornecido", async () => {
+    it("Should return 401 when an invalid token is provided", async () => {
       const bodyTransferencias = { ...postTransferencias };
       const tokenInválido = "token_invalido";
 
@@ -254,7 +254,7 @@ describe("Transferências", () => {
   });
 
   describe("GET /transfers", () => {
-    it("Deve retornar sucesso com 200 e array no corpo da requisição com dados válidos", async () => {
+    it("Should return 200 success and an array with valid data in the response body", async () => {
       const response = await request(process.env.BASE_URL)
         .get("/transfers")
         .set("Authorization", `Bearer ${token}`);
@@ -263,7 +263,7 @@ describe("Transferências", () => {
       expect(response.body).to.be.an("array");
     });
 
-    it("Deve retornar sucesso com 200 e array no corpo da requisição com campos obrigatórios com tipos válidos", async () => {
+    it("Should return 200 success and an array in the response body with required fields having valid types", async () => {
       const response = await request(process.env.BASE_URL)
         .get("/transfers")
         .set("Authorization", `Bearer ${token}`);
@@ -280,7 +280,7 @@ describe("Transferências", () => {
       });
     });
 
-    it("Deve retornar o usuário autenticado no campo 'from'", async () => {
+    it("Should return the authenticated user in the 'from' field", async () => {
       const response = await request(process.env.BASE_URL)
         .get("/transfers")
         .set("Authorization", `Bearer ${token}`);
@@ -290,7 +290,7 @@ describe("Transferências", () => {
       });
     });
 
-    it("Deve retornar 401 quando token não for fornecido", async () => {
+    it("Should return 401 when no token is provided", async () => {
       const tokenVazio = "";
 
       const response = await request(process.env.BASE_URL)
@@ -300,7 +300,7 @@ describe("Transferências", () => {
       expect(response.status).to.equal(401);
     });
 
-    it("Deve retornar 401 quando token inválido for fornecido", async () => {
+    it("Should return 401 when an invalid token is provided", async () => {
       const tokenInválido = "token_invalido";
 
       const response = await request(process.env.BASE_URL)

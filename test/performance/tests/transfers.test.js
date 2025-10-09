@@ -6,9 +6,9 @@ const postTransfer = JSON.parse(open("../fixtures/postTransfers.json"));
 
 export const options = {
   stages: [
-    { duration: '5s', target: 10 },
-    { duration: '20s', target: 10 },
-    { duration: '5s', target: 0 },
+    { duration: "5s", target: 10 },
+    { duration: "20s", target: 10 },
+    { duration: "5s", target: 0 },
   ],
 
   thresholds: {
@@ -25,14 +25,14 @@ export default function () {
   const params = {
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + token,
+      Authorization: "Bearer " + token,
     },
   };
 
   const res = http.post(url, payload, params);
 
   check(res, {
-    "Validar que o status é 201": (r) => r.status === 201,
+    "Validate that the status is 201": (r) => r.status === 201,
   });
 
   sleep(1);
