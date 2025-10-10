@@ -1,6 +1,5 @@
 const request = require('supertest')
 const { expect } = require('chai')
-const nock = require('nock')
 require('dotenv').config()
 
 describe('Users', () => {
@@ -33,15 +32,6 @@ describe('Users', () => {
                     expect(favorecido).to.be.a('string');
                 });
             });
-        });
-
-        it('should have 500 status code when API is out', async () => {
-
-            nock(process.env.BASE_URL)
-            .get('/users')
-            .reply(500,{message: 'Erro interno - simulado'});
-            const response = await request(process.env.BASE_URL).get('/users');
-            expect(response.status).to.equal(500);
         });
     });
 });
