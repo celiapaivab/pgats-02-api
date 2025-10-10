@@ -3,7 +3,7 @@ const { expect } = require('chai')
 const postUser = require('../../../fixtures/postUser.json')
 const postLogin = require('../fixtures/postLogin.json')
 
-describe('Registro', () => {
+describe('Register', () => {
 
     describe('POST', () => {
         it('Must register a new user', async () => {
