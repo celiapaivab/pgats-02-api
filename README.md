@@ -103,26 +103,26 @@ K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=html-report.html k6 run test/perfo
 
 The API tests were designed using **Equivalence Partitioning (EP)** and **Boundary Value Analysis (BVA)** to ensure coverage of valid, invalid, and edge-case scenarios across all endpoints.
 
-1. User Registration (`POST /users/register`)
+#### User Registration (`POST /users/register`)
 - Register a new user → `201 Created`
 - Register duplicate user → `400 Bad Request`
 
 ---
 
-### Login (`POST /users/login`)
+####  Login (`POST /users/login`)
 - Valid credentials → `200 OK`, returns `user` and `token`
 - Invalid username or password → `400 Bad Request`
 - Response validation → correct field types for `username`, `favorecidos`, `saldo`
 
 ---
 
-### List Users (`GET /users`)
+####  List Users (`GET /users`)
 - Valid request → `200 OK`, returns an array of registered users  
 - Response validation → each user object includes fields: `username`, `favorecidos`, and `saldo`  
 
 ---
 
-### Transfers (`POST /transfers` and `GET /transfers`)
+####  Transfers (`POST /transfers`)
 Tests cover all **business rules**, including authorization and transfer limits.
 
 - Valid transfer ≤ R$5,000 → `201`
@@ -132,10 +132,43 @@ Tests cover all **business rules**, including authorization and transfer limits.
 - Invalid fields, empty/incorrect types → `400`
 - Missing or invalid token → `401`
 
-**GET /transfers:**  
+---
+
+####  List Transfers (`GET /transfers`)
 - Valid token → returns array with valid data  
 - Missing or invalid token → `401`
 
+---
+
+#### Bugs Found
+
+During testing of the **Transfers endpoints**, the following issues were identified:
+
+1. **Transfer amount is zero**  
+   - Expected: `400 Bad Request`  
+   - Actual: `201 Created`  
+   - **Issue:** The API allowed a transfer with zero value.
+
+2. **Transfer amount is negative**  
+   - Expected: `400 Bad Request`  
+   - Actual: `201 Created`  
+   - **Issue:** Negative transfers are incorrectly accepted.
+
+3. **Transfer to the same user**  
+   - Expected: `400 Bad Request`  
+   - Actual: `201 Created`  
+   - **Issue:** Users can transfer to themselves, which should be blocked.
+
+4. **Invalid token for POST /transfers**  
+   - Expected: `401 Unauthorized`  
+   - Actual: `403 Forbidden`  
+   - **Issue:** API returns `403` instead of `401` when an invalid token is provided.
+
+5. **Invalid token for GET /transfers**  
+   - Expected: `401 Unauthorized`  
+   - Actual: `403 Forbidden`  
+   - **Issue:** API returns `403` instead of `401` when an invalid token is provided.
+  
 ---
 
 ### Performance Tests
@@ -162,5 +195,6 @@ Each test included a check to confirm the expected **status code** (e.g., `200 O
 check(res, {
   "Validate that the status is 200": (r) => r.status === 200,
 });
+```
 
 ---
